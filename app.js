@@ -210,7 +210,7 @@ app.get("/notes", isAuthenticated, function(request, response){
     //response.send("allnotes.hbs");
     
 });
-app.get("/notes/:id", function(req, res){
+app.get("/notes/:id", isAuthenticated, function(req, res){
        
     var id = new objectId(req.params.id);
     Note.findOne({_id: id}, function(err, result){
@@ -228,19 +228,43 @@ app.delete("/notes/:id", function(req, res){
             if(err) return res.status(400).send();
             if(result == null){
                 console.log("заметка уже удалена");
-            }
-            console.log(result) ;            
-            //var nots = result.value;
-            //res.send(nots);  
-            //response.render("allnotes.hbs");
-            res.end('back'); 
+            }          
         });
      //res.redirect("/notes"); 
          
 });
+//--------------- Изменение заметки  --------------//
+app.get("/editnotes/:id", isAuthenticated, function(req, res){
+    var id = req.params["id"];
+    Note.findOne({_id: id}, function(err, doc){
+        //console.log(doc);
+        //console.log(doc.text);
+        res.render("editnotes.hbs",
+        {            
+            usernotes:doc.text,
+            noteid:doc._id
+        }
+    );
+    });
+    
+});
 
-  
-app.put("/notes/:id", jsonParser, function(req, res){
+app.post("/editnotes/:id", bodyParser.urlencoded({extended: true}), function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    //console.warn(request);   
+    var id = request.params["id"];
+    //response.render("notegood.hbs");
+    Note.findOneAndUpdate(
+        {_id: id}, // критерий выборки
+        { $set: {text: request.body.usernotes}}, // параметр обновления
+        function(err, result){
+            if(err) return console.log(err);
+            //console.log(result);
+            
+        });
+    response.redirect("/notes");
+}); 
+/*app.put("/notes/:id", function(req, res){
        
     if(!req.body) return res.sendStatus(400);
     var id = new objectId(req.body.id);
@@ -255,7 +279,7 @@ app.put("/notes/:id", jsonParser, function(req, res){
             res.send(nots);
             
         });
-});  
+});  */
        
 //------------------------- проба разработки своего велика
 /*app.delete("/notes/:id", function(request, response){

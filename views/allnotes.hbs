@@ -13,8 +13,8 @@
                     {{#each result}}
                     <tr>
                         <td style="width:80%">{{this.text}}</td>                      
-                        <td><buttom class="btn btn-default remove" data-id="{{this._id}}">Удалить</buttom></td>
-                        <td><buttom class="btn btn-default change" data-id="{{this._id}}">Изменить</buttom></td>
+                        <td><buttom class="btn btn-default remove" data-id="{{this._id}}">Удалить</buttom></td>      
+                        <td><a class="btn btn-default" href="/editnotes/{{this._id}}" role="button">Изменить</a></td>
                     </tr>
                     
                     {{/each}}
