@@ -1,0 +1,29 @@
+ {{> head}}
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12"> {{> menu}}   </div>
+            <div class="col-md-12">
+                   <h2 class="text-center">Регистрация</h2>
+                   <form action="/register" method="post">
+                        <input type="hidden" name="id" value="0" />
+                        <div class="form-group">
+                            <label for="name">Имя:</label>
+                            <input class="form-control" name="username" required="required"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Пароль:</label>
+                            <input type = "password" class="form-control" name="userpassword" required="required"/>
+                        </div>
+                        <div class="panel-body">
+                            <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
+                            <a id="reset" class="btn btn-sm btn-primary">Сбросить</a>
+                        </div>
+                    </form>
+                 
+            </div>
+        </div>
+            
+    </div>
+   
+ {{> footer}}

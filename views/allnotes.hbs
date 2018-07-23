@@ -1,0 +1,44 @@
+ {{> head}}
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {{> menugood}}                  
+            </div>
+            <div class="col-md-12">
+                   <h2 class="text-center">Заметки пользователя {{user}}</h2>               
+            </div>
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    {{#each result}}
+                    <tr>
+                        <td style="width:80%">{{this.text}}</td>                      
+                        <td><buttom class="btn btn-default remove" data-id="{{this._id}}">Удалить</buttom></td>
+                        <td><buttom class="btn btn-default change" data-id="{{this._id}}">Изменить</buttom></td>
+                    </tr>
+                    
+                    {{/each}}
+                </table>
+                    
+            </div>
+        </div>
+            
+    </div>
+    <script>
+        function DeleteNote(id) {
+            $.ajax({
+                url: "notes/"+id,
+                contentType: "application/json",
+                method: "DELETE",
+                success: function (note) {
+                    location.reload();                  
+                }
+            })
+        }
+        // нажимаем на ссылку Удалить
+        $("body").on("click", ".remove", function () {
+            var id = $(this).data("id");
+            DeleteNote(id);
+        })
+    </script>
+ {{> footer}}
