@@ -228,7 +228,8 @@ app.delete("/notes/:id", function(req, res){
             if(err) return res.status(400).send();
             if(result == null){
                 console.log("заметка уже удалена");
-            }          
+            }
+                 
         });
      //res.redirect("/notes"); 
          
@@ -263,68 +264,38 @@ app.post("/editnotes/:id", bodyParser.urlencoded({extended: true}), function (re
             
         });
     response.redirect("/notes");
-}); 
-/*app.put("/notes/:id", function(req, res){
-       
-    if(!req.body) return res.sendStatus(400);
-    var id = new objectId(req.body.id);
-    var usertext = req.body.text;  
-      
-    Note.findOneAndUpdate({_id: id}, { $set: {text: usertext}},
-             {returnOriginal: false },function(err, result){
-              
-            if(err) return res.status(400).send();
-              
-            var nots = result.value;
-            res.send(nots);
-            
-        });
-});  */
-       
-//------------------------- проба разработки своего велика
-/*app.delete("/notes/:id", function(request, response){
-    
-    var id = new objectId(request.params.id);
-    Note.findOne({_id: id}, function(err, user){
-              
-        if(err) return res.status(400).send();
-          
-        res.send(user);
-        client.close();
-    });
-    var id = '5b4f5da13b27f245b16bba9b';
-    Note.findOneAndRemove({_id:id}, function(err, doc){            
-        if(err) return console.log(err);        
-        console.log("Удалена заметка ", doc);
+});
+//---------------------  удаление заметки ---------------------------// 
+app.get("/deletenotes/:id", isAuthenticated, function(req, res){
+    var id = req.params["id"];
+    Note.findOne({_id: id}, function(err, doc){
+        //console.log(doc);
+        //console.log(doc.text);
+        res.render("deletenotes.hbs",
+        {            
+            usernotes:doc.text,
+            noteid:doc._id
+        }
+    );
     });
     
-    response.render("allnotes.hbs");
+});
 
-});*/
+app.post("/deletenotes/:id", bodyParser.urlencoded({extended: true}), function (request, response) {
+    if(!request.body) return response.sendStatus(400);   
+    var id = request.params["id"];  
+    Note.findOneAndDelete({_id: id}, function(err, result){
+            if(err) return console.log(err);
+            //console.log(result);           
+        });
+    response.redirect("/notes");
+});
+       
+
 //------------------------- проба разработки своего велика
 app.get("/addnotes", isAuthenticated, function(request, response){
     //console.log('Автор', request.user.name);
-    response.render("addnotes.hbs", { user: request.user });
-    
-    // как нам получить юзера?
-   
-    /*var notes1 = new Notes({
-        text:'Интересная заметка', // здесь нужно брать поле с формы ввода заметки
-        author: user._id, // привязываем заметку к аутентифицированному пользователю
-
-    });
-    notes1.save(function (err) {
-        if (err) return handleError(err);
-        // thats it!
-      });
-      // поиск всех заметок одного пользователя
-    */
-   /*Note.find({author:'5b4f43d018fa6a378ac890ed'}).populate('author').exec(function(err, result){
-        if (err) return handleError(err);
-        console.log('Автор', result.author.name);
-        console.log('Заметка', result.notes1.text);
-    })*/
-    
+    response.render("addnotes.hbs", { user: request.user }); 
 
 });
 app.post("/addnotes", bodyParser.urlencoded({extended: true}), function (request, response) {

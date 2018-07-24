@@ -1,4 +1,5 @@
  {{> head}}
+ 
 <body>
     <div class="container">
         <div class="row">
@@ -13,7 +14,7 @@
                     {{#each result}}
                     <tr>
                         <td style="width:80%">{{this.text}}</td>                      
-                        <td><buttom class="btn btn-default remove" data-id="{{this._id}}">Удалить</buttom></td>      
+                        <td><a class="btn btn-default" href="/deletenotes/{{this._id}}" role="button">Удалить</a></td>      
                         <td><a class="btn btn-default" href="/editnotes/{{this._id}}" role="button">Изменить</a></td>
                     </tr>
                     
@@ -24,7 +25,7 @@
         </div>
             
     </div>
-    <script>
+    <!--<script>
         function DeleteNote(id) {
             $.ajax({
                 url: "notes/"+id,
@@ -40,5 +41,5 @@
             var id = $(this).data("id");
             DeleteNote(id);
         })
-    </script>
+    </script>-->
  {{> footer}}
