@@ -4,7 +4,7 @@
 
 const express = require("express");
 const app = express();
-
+const notes = require('./routes/notes');
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session); // подключаем connect-mongo 
 // подключаем парпорт
@@ -19,11 +19,11 @@ const cookieParser = require('cookie-parser')
 const hbs = require("hbs");
 const User = require("./models/user");
 const Note = require("./models/notes");
-const notes = require('./routes/notes');
+
 app.use(bodyParser.urlencoded({ extended: true }));
 //const register = require('./routes/register');
-
 app.use('/notes',  notes);
+
 //app.use('/register',  register);
 //app.use(bodyParser());
 // правильно ли подлючены?
@@ -86,6 +86,8 @@ hbs.registerPartials(__dirname + "/views/partials");
 
 app.set("view engine", "hbs");
 app.use(express.static(__dirname + "/public"));
+
+
 
 app.get("/register",  function (request, response) {
 

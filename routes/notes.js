@@ -1,8 +1,11 @@
 var express = require('express');
-//const User = require("./models/user");
+//const User = require("../models/user");
 //const bodyParser = require("body-parser");
 //const hbs = require("hbs");
 
+const app = express();
+
+const Note = require("../models/notes");
 var router = express.Router();
 
 var isAuthenticated = function (req, res, next) {
@@ -12,7 +15,7 @@ var isAuthenticated = function (req, res, next) {
   };
 
 // Страница с заметками
-router.get("/notes", isAuthenticated, function(request, response){
+router.get("/", function(request, response){
     //console.log('Автор', request.user.name);
     //response.render("notes.hbs", { user: request.user });
     
@@ -37,7 +40,7 @@ router.get("/notes", isAuthenticated, function(request, response){
 
 
 
-router.get("/notes/:id", isAuthenticated, function(req, res){
+router.get("/:id", isAuthenticated, function(req, res){
        
     var id = new objectId(req.params.id);
     Note.findOne({_id: id}, function(err, result){
@@ -49,7 +52,7 @@ router.get("/notes/:id", isAuthenticated, function(req, res){
         });
             
 });
-router.delete("/notes/:id", function(req, res){       
+router.delete("/:id", function(req, res){       
     var id = new objectId(req.params.id);
     Note.findOneAndDelete({_id: id}, function(err, result){              
             if(err) return res.status(400).send();
