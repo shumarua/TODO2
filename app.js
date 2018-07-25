@@ -1,11 +1,10 @@
 // разбить структуру на роутеры
-// template разбить <head> <footer>
-// удаление переделать
-// проект в git
+
 // автоизация через email (nodemailer smtp, sendgrid )
 
 const express = require("express");
 const app = express();
+
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session); // подключаем connect-mongo 
 // подключаем парпорт
@@ -20,7 +19,12 @@ const cookieParser = require('cookie-parser')
 const hbs = require("hbs");
 const User = require("./models/user");
 const Note = require("./models/notes");
+const notes = require('./routes/notes');
 app.use(bodyParser.urlencoded({ extended: true }));
+//const register = require('./routes/register');
+
+app.use('/notes',  notes);
+//app.use('/register',  register);
 //app.use(bodyParser());
 // правильно ли подлючены?
 app.use(cookieParser());
@@ -83,12 +87,13 @@ hbs.registerPartials(__dirname + "/views/partials");
 app.set("view engine", "hbs");
 app.use(express.static(__dirname + "/public"));
 
-// регистрация пользователя 
 app.get("/register",  function (request, response) {
 
     response.render("register.hbs");
+    //response.send('Birds home page');
 
 });
+
 // регистрация пользователя POST
 app.post("/register", bodyParser.urlencoded({extended: true}), function (request, response) {
     if(!request.body) return response.sendStatus(400);
@@ -97,6 +102,7 @@ app.post("/register", bodyParser.urlencoded({extended: true}), function (request
         name: request.body.username,
         password:request.body.userpassword,
     });
+    
     
     user.save(function(err, user, result){
         //mongoose.disconnect(); 
@@ -116,6 +122,7 @@ app.post("/register", bodyParser.urlencoded({extended: true}), function (request
 
 
 
+
 // аутентификация пользователя POST
 app.post('/login', 
     passport.authenticate('local', { 
@@ -130,36 +137,6 @@ app.post('/login',
 app.get("/notlogin", function(request, response){
     response.render("nogood.hbs");
 });
-
-/*app.post("/login", urlencodedParser, function (request, response) {
-    if(!request.body) return response.sendStatus(400);
-    // express-validator подключить вместо того что вверху
-
-    User.findOne({name: request.body.username}, function(err, result){
-        if (err) throw err;
-        if(result){
-            result.comparePassword(request.body.userpassword, function(err, isMatch) {
-                if (err) throw err;
-                if(isMatch){
-                    request.                   
-                    response.render("logingood.hbs");
-                    
-                    
-                }else{               
-                    response.render("nogood.hbs");
-                }
-                
-            });
-        }else{
-            response.render("nogood.hbs");
-        }
-        
-        
-                               
-    })
-    
-
-});*/
 
 // аудентификация пользователя
 app.get("/login",  function (request, response) {
@@ -187,7 +164,7 @@ var isAuthenticated = function (req, res, next) {
     res.redirect('/');
   }
 
-// Страница с заметками
+/* // Страница с заметками
 app.get("/notes", isAuthenticated, function(request, response){
     //console.log('Автор', request.user.name);
     //response.render("notes.hbs", { user: request.user });
@@ -202,7 +179,7 @@ app.get("/notes", isAuthenticated, function(request, response){
             result,
             user: request.user.name
         });
-    
+        //console.log('notes ', result);
    
         
        // console.log('notes '+request.user.name,result);
@@ -233,7 +210,7 @@ app.delete("/notes/:id", function(req, res){
         });
      //res.redirect("/notes"); 
          
-});
+}); */
 //--------------- Изменение заметки  --------------//
 app.get("/editnotes/:id", isAuthenticated, function(req, res){
     var id = req.params["id"];
