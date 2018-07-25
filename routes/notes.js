@@ -15,7 +15,7 @@ var isAuthenticated = function (req, res, next) {
   };
 
 // Страница с заметками
-router.get("/", function(request, response){
+router.get("/", isAuthenticated, function(request, response){
     //console.log('Автор', request.user.name);
     //response.render("notes.hbs", { user: request.user });
     
