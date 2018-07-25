@@ -1,9 +1,15 @@
 var express = require('express');
 //const User = require("./models/user");
-const bodyParser = require("body-parser");
+//const bodyParser = require("body-parser");
 //const hbs = require("hbs");
 
 var router = express.Router();
+
+var isAuthenticated = function (req, res, next) {
+    if (req.isAuthenticated())
+      return next();
+    res.redirect('/');
+  };
 
 // Страница с заметками
 router.get("/notes", isAuthenticated, function(request, response){
@@ -29,11 +35,8 @@ router.get("/notes", isAuthenticated, function(request, response){
     
 });
 
-var isAuthenticated = function (req, res, next) {
-    if (req.isAuthenticated())
-      return next();
-    res.redirect('/');
-  } ;
+
+
 router.get("/notes/:id", isAuthenticated, function(req, res){
        
     var id = new objectId(req.params.id);
