@@ -1,7 +1,8 @@
-var express = require('express');
-const passport       = require('passport');
+const express = require('express');
+const passport = require('passport');
+const User = require("../models/user");
 const LocalStrategy  = require('passport-local').Strategy;
-var router = express.Router();
+const router = express.Router();
 
 router.post('/', 
     passport.authenticate('local', { 
@@ -21,6 +22,22 @@ router.get("/not", function(request, response){
 router.get("/",  function (request, response) {
 
     response.render("login.hbs");
+
+});
+
+router.get("/aktivate/:ref",  function (request, response) {
+    var ref = request.params["ref"];
+    User.findOneAndUpdate(
+        {idref: ref}, // критерий выборки
+        { $set: {isVerified: true}}, // параметр обновления
+        function(err, result){
+            if(err) return console.log(err);
+            //console.log(result);
+            
+        });
+
+
+    response.render("emailref.hbs");
 
 });
 

@@ -73,6 +73,10 @@ passport.use(new LocalStrategy({
                 console.log('User Not Found with username '+username);
                 return done(null, false); 
             }
+            if(user.isVerified == false){
+                console.log('Учетная запись неактивна');
+                return done(null, false);
+            }
             if (user){
                 
                 user.comparePassword(password, function(err, isMatch) {

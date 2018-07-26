@@ -10,7 +10,7 @@ var userSchema = new Schema({
     name:{
         type:String,
         require:true,
-        //unique:true,
+        unique:true,
         minlength:3,
         maxlength:10,
         index: { unique: true }
@@ -22,6 +22,13 @@ var userSchema = new Schema({
     isVerified: {
       type: Boolean,
       default: false
+    },
+    email:{
+      type:String,
+      //unique: true
+    },
+    idref:{
+    type:String,
     },
     passwordResetToken: String,
     passwordResetExpires: Date,
