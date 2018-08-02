@@ -1,42 +1,50 @@
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require("bcrypt-nodejs");
 //const crypto = require('crypto');
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost:27017/usersdbho");
 var Schema = mongoose.Schema;
 //SALT_WORK_FACTOR = 10;
 
-var userSchema = new Schema({
-  //_id: Schema.Types.ObjectId,
-    name:{
-        type:String,
-        require:true,
-        unique:true,
-        minlength:3,
-        maxlength:10,
-        index: { unique: true }
+var userSchema = new Schema(
+  {
+    //_id: Schema.Types.ObjectId,
+    name: {
+      type: String,
+      require: true,
+      unique: true,
+      minlength: 3,
+      maxlength: 10,
+      index: { unique: true }
     },
-    password:{
-        type:String,
-        require:true,          
+    password: {
+      type: String,
+      require: true
     },
     isVerified: {
       type: Boolean,
       default: false
     },
-    email:{
-      type:String,
+    email: {
+      type: String
       //unique: true
     },
-    idref:{
-    type:String,
+    idref: {
+      type: String
+    },
+    pasref: {
+      type: String
     },
     passwordResetToken: String,
     passwordResetExpires: Date,
-    roles:[String], // роль пользователя (роли)
-    notes:{type: Schema.Types.ObjectId, ref: 'Notes'}
-}, { timestamps: true }); 
-
-
+    roles: {
+      type: [String],
+      enum: ["admin", "user"],
+      default: ["user"]
+    }, // роль пользователя (роли)
+    notes: { type: Schema.Types.ObjectId, ref: "Notes" }
+  },
+  { timestamps: true }
+);
 
 /*UserSchema.pre(save, function(next) {
   const user = this;
@@ -70,34 +78,42 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
 /**
  * Password hash middleware.
  */
-userSchema.pre('save', function save(next) {
-    const user = this;
-    console.log(user)
-    if (!user.isModified('password')) { return next(); }
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) { return next(err); }
-      bcrypt.hash(user.password, salt, null, (err, hash) => {
-        if (err) { return next(err); }
-        user.password = hash;
-        next();
-      });
+userSchema.pre("save", function save(next) {
+  const user = this;
+  console.log(user);
+  if (!user.isModified("password")) {
+    return next();
+  }
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) {
+      return next(err);
+    }
+    bcrypt.hash(user.password, salt, null, (err, hash) => {
+      if (err) {
+        return next(err);
+      }
+      user.password = hash;
+      next();
     });
   });
-  
-  
-  /**
-   * Helper method for validating user's password.
-   */
-  userSchema.methods.comparePassword = function comparePassword(candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-      cb(err, isMatch);
-    });
-  };
-  
-  /** что за метод? распознавание аватаров?
-   * Helper method for getting user's gravatar.
-   */
-  /*userSchema.methods.gravatar = function gravatar(size) {
+});
+
+/**
+ * Helper method for validating user's password.
+ */
+userSchema.methods.comparePassword = function comparePassword(
+  candidatePassword,
+  cb
+) {
+  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+    cb(err, isMatch);
+  });
+};
+
+/** что за метод? распознавание аватаров?
+ * Helper method for getting user's gravatar.
+ */
+/*userSchema.methods.gravatar = function gravatar(size) {
     if (!size) {
       size = 200;
     }
@@ -108,8 +124,8 @@ userSchema.pre('save', function save(next) {
     return `https://gravatar.com/avatar/${md5}?s=${size}&d=retro`;
   };
   */
- var User = mongoose.model("User", userSchema);
- 
- module.exports = User;
- 
+var User = mongoose.model("User", userSchema);
+
+module.exports = User;
+
 //exports.userSchema = mongoose.model("User", userSchema);

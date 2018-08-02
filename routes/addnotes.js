@@ -1,6 +1,4 @@
 var express = require('express');
-//const User = require("../models/user");
-const bodyParser = require("body-parser");
 //const hbs = require("hbs");
 
 const Note = require("../models/notes");
@@ -18,7 +16,7 @@ router.get("/", isAuthenticated, function(request, response){
     response.render("addnotes.hbs", { user: request.user }); 
 
 });
-router.post("/", bodyParser.urlencoded({extended: true}), function (request, response) {
+router.post("/", function (request, response) {
     if(!request.body) return response.sendStatus(400);
     //console.warn(request);
     var note = new Note({       

@@ -1,0 +1,41 @@
+ {{> head}}
+ 
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {{> menugood}}                  
+            </div>
+            <div class="col-md-12">
+                   <h2 class="text-center">Изменение пароля пользователя {{user}}</h2> 
+                   <form action="/user/pasedit/{{pasref}}" method="post">                        
+                        <div class="form-group">
+                            <label for="password">Новый пароль:</label>
+                            <input type = "password" class="form-control" name="userpassword" required="required"/>
+                        </div>        
+                        <div class="panel-body">
+                            <button type="submit" class="btn btn-sm btn-primary">Изменить пароль</button>          
+                        </div>
+                    </form>
+                              
+            </div>
+
+            
+            {{!-- <div class="col-md-12">
+                <table class="table table-striped">
+                    {{#each result}}
+                    <tr>
+                        <td style="width:80%">{{this.text}}</td>                      
+                        <td><a class="btn btn-default" href="/deletenotes/{{this._id}}" role="button">Удалить</a></td>      
+                        <td><a class="btn btn-default" href="/editnotes/{{this._id}}" role="button">Изменить</a></td>
+                    </tr>
+                    
+                    {{/each}}
+                </table>
+                    
+            </div> --}}
+        </div>
+            
+    </div>
+   
+ {{> footer}}
