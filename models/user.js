@@ -80,7 +80,7 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
  */
 userSchema.pre("save", function save(next) {
   const user = this;
-  console.log(user);
+  //console.log(user);
   if (!user.isModified("password")) {
     return next();
   }

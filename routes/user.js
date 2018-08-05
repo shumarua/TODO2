@@ -49,7 +49,7 @@ router.get("/pasedit/", isAuthenticated, function(request, response) {
           pasref
       };
       sgMail.send(msg2);
-      response.send("На почту отправлены инструкции для изменения пароля");          
+      response.send("<p>На почту отправлены инструкции для изменения пароля</p><p><a href='http://localhost:3000/user/'>Вернуться</a></p>");          
         });
         
 });
@@ -68,14 +68,27 @@ router.post("/pasedit/:pasref", bodyParser.urlencoded({extended: true}), functio
     //console.warn(request);   
     var pasref = request.params["pasref"];
     //response.render("notegood.hbs");
-    User.findOneAndUpdate(
+   /* User.findOneAndUpdate(
         {pasref: pasref}, // критерий выборки
         { $set: {password: request.body.userpassword}}, // параметр обновления
         function(err, result){
             if(err) return console.log(err);
+            
             console.log(result); 
+
             response.send("<p>Пароль изменен</p><p><a href='http://localhost:3000/notes/'>Вернуться</a></p>");           
         });
+    */
+   User.findOne({pasref: pasref}, function(err, user){      
+    if(err) return console.log(err);
+    user.password = request.body.userpassword;
+    user.save((err) => {
+      if (err) { return next(err); }    
+      response.send("<p>Ваш пароль изменен, для авторизации перейдите по ссылке</p><p><a href='/login/'>Вернуться</a></p>");
+    });
+   // console.log("User reload==", user); 
+             
+});   
     User.findOne({pasref: pasref}, function(err, result){
         if(err) return console.log(err);
         console.log("User reload==", result); 
@@ -84,57 +97,5 @@ router.post("/pasedit/:pasref", bodyParser.urlencoded({extended: true}), functio
 });
 
 
-
-
-
-
-  /* router.post("/pasedit/:id", bodyParser.urlencoded({extended: true}), function(request, response) {
-    if(!request.body) return response.sendStatus(400);
-    var idref = crypto.randomBytes(20).toString('hex');
-    var id = request.params["id"];
-    User.findOneAndUpdate(
-        {_id:id}, // критерий выборки
-        { $set: {password: request.body.userpassword, idref:idref}}, // параметр обновления
-        function(err, result){
-            if(err) return console.log(err);
-            console.log("Usernewpas",result);
-            
-        });
-        sgMail.setApiKey(sendgridKey);
-        var msg2 = {
-        to: request.user.email,
-        from: "todo@example.com",
-        subject: "Изменение пароля пользователя TODO2",
-        text:
-          "Чтобы активировать новый пароль перейдите по ссылке http://localhost:3000/user/pasedit/aktivate/" +
-          idref,
-        html:
-          "Чтобы активировать новый пароль перейдите по ссылке http://localhost:3000/user/pasedit/aktivate/" +
-          idref
-      };
-      sgMail.send(msg2);
-      response.send("Пароль изменен");
-  }); */
-  /* router.get("/pasedit/aktivate/:id", function(request, response) {
-    response.send("Типа получилось");
-   /*  var id = request.params["id"];
-    var pas = "";
-    User.find({idref:id}, function(err,result){
-        if(err) return console.log(err);
-        console.log("USER+++",result);
-        pas = result.pasref;
-    });
-    User.findOneAndUpdate(
-        {idref:id}, // критерий выборки
-        { $set: {password: pas}}, // параметр обновления
-        function(err, result){
-            if(err) return console.log(err);
-            console.log(result);
-        response.send("<h1>Пароль изменен</h1>") ;   
-    });
-   
-    
-    
-  }); */
 
 module.exports = router;
