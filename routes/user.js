@@ -191,6 +191,15 @@ var upload = multer({
         }
      
       }).single('avatar'); */
+var storage = multer.diskStorage({
+        destination: function(req, file, callback) {
+            callback(null, './uploads')
+        },
+        filename: function(req, file, callback) {
+            callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+        }
+});
+
 
 router.get("/avatar", isAuthenticated, function(request, response) {   
     response.render("avatar.hbs");    
@@ -203,20 +212,40 @@ router.get("/avatar", isAuthenticated, function(request, response) {
         }
     )}
 )} */
+router.post('/avatar', function(req, res) {
+    var maxSize = 1024*1;
+	var upload = multer({
+        storage: storage,
+        limits: { fileSize: maxSize },
+		fileFilter: function(req, file, callback) {
+			var ext = path.extname(file.originalname)
+			if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
+				return callback(res.end("<p>Only image!</p><p><a href='/user/avatar/'>Return</a></p>"), null)
+			}
+			callback(null, true)
+		}
+    }).single('avatar');
+    
+	upload(req, res, function(err) {       
+        if(err) return console.log(err);
+        //console.log("REQ-FILE  ",req.file.filename); 
+        User.findOneAndUpdate(
+            {_id:req.user._id}, // критерий выборки
+            { $set: {avatar:req.file.filename}}, // параметр обновления
+            function(err, result){
+                if(err) return console.log(err);
+            //res.send("<p>Ваш новый аватар загружен, </p><p><a href='/user/'>Вернуться</a></p>");          
+            //console.log("UPDATE=",result);         
+            });
+        res.send("<p>Ваш новый аватар загружен, </p><p><a href='/user/'>Вернуться</a></p>"); 
+        //res.end('<p>Ваш новый аватар загружен, </p><p><a href="/user/">Вернуться</a></p>');  
+    });
+    //console.log("REQ-FILE  ",useravatari);
+    
+});
 //router.post('/avatar', upload.single('avatar'), function(req, res, next) {
-router.post('/avatar', upload.single('avatar'), function(req, res) {
-    //console.log("REQ-FILE  ",req); 
-    /* upload(req, res, function (err) {
-        if (err) {
-          console.log(err.message);
-          // An error occurred when uploading
-          return
-        }
-
-        console.log('Everything went fine');
-        console.log("REQ-FILE  ",req); 
-        // Everything went fine
-      })  */
+/* router.post('/avatar', upload.single('avatar'), function(req, res) {
+    console.log("REQ-FILE  ",req.file); 
 
      User.findOneAndUpdate(
         {_id:req.user._id}, // критерий выборки
@@ -225,10 +254,8 @@ router.post('/avatar', upload.single('avatar'), function(req, res) {
             if(err) return console.log(err);
         res.send("<p>Ваш новый аватар загружен, </p><p><a href='/user/'>Вернуться</a></p>");          
         //console.log("UPDATE=",result);         
-        });      
-    
-    
-});
+        });         
+}); */
     
 router.get("/avatar/:id", function(request, response) { 
     var id = request.params["id"];  
