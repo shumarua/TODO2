@@ -7,9 +7,13 @@
                 {{> menugood}}                  
             </div>
             <div class="col-md-12">
+                    
                    <h2 class="text-center">Профиль пользователя {{user}}</h2> 
+                   <img src="/user/avatar/{{useravatar}}" alt="{{user}}" width="300px">
                    <p>Почта: {{email}}</p> 
-                    <a class="btn btn-default" href="/user/pasedit/" role="button">Изменить Пароль</a>                  
+                    <a class="btn btn-default" href="/user/pasedit/" role="button">Изменить Пароль</a>
+                    
+                    <a class="btn btn-default" href="/user/avatar/" role="button">Загрузить аватар</a>                  
                    {{!-- <form action="/user/pasedit/{{userid}}" method="post">                        
                         <div class="form-group">
                             <label for="password">Новый пароль:</label>

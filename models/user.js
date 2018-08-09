@@ -34,6 +34,10 @@ var userSchema = new Schema(
     pasref: {
       type: String
     },
+    avatar:{
+      type: String,
+      default:"5566",
+    },
     passwordResetToken: String,
     passwordResetExpires: Date,
     roles: {
